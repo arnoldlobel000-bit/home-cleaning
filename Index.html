@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Home Cleaning</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f7fb;
+  color: #172033;
+}
+
+header {
+  background: #172033;
+  color: white;
+  padding: 25px 20px;
+  border-radius: 0 0 25px 25px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+header p {
+  margin: 6px 0 0;
+  opacity: .75;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.date {
+  text-align: center;
+  font-weight: 600;
+  margin: 10px 0 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 5px 20px rgba(0,0,0,.07);
+}
+
+.task-title {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.person {
+  font-size: 17px;
+  margin: 10px 0;
+}
+
+.status {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: #fff3cd;
+  color: #856404;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.photo {
+  background: #eef2ff;
+  color: #3949ab;
+}
+
+.complete {
+  background: #172033;
+  color: white;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.history-title {
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.history-row {
+  border-top: 1px solid #eee;
+  padding: 12px 0;
+}
+
+.small {
+  font-size: 14px;
+  color: #687386;
+}
+
+.done {
+  color: #16803c;
+  font-weight: 600;
+}
+
+.pending {
+  color: #c27b00;
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <h1>🏠 Home Cleaning</h1>
+    <p>Kitchen & Bathroom Cleaning</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="date" id="today"></div>
+
+  <div class="card">
+    <div class="task-title">🚿 Bathroom</div>
+    <div class="person">
+      Assigned to: <strong id="bathroomPerson"></strong>
+    </div>
+    <span class="status" id="bathroomStatus">⏳ Pending</span>
+
+    <label for="bathroomPhoto">
+      <button class="photo" type="button">
+        📸 Upload Bathroom Photo
+      </button>
+    </label>
+
+    <input type="file" id="bathroomPhoto" accept="image/*">
+
+    <button class="complete" onclick="completeTask('bathroom')">
+      ✅ Mark Bathroom Complete
+    </button>
+  </div>
+
+
+  <div class="card">
+    <div class="task-title">🧹 Kitchen</div>
+    <div class="person">
+      Assigned to: <strong id="kitchenPerson"></strong>
+    </div>
+    <span class="status" id="kitchenStatus">⏳ Pending</span>
+
+    <label for="kitchenPhoto">
+      <button class="photo" type="button">
+        📸 Upload Kitchen Photo
+      </button>
+    </label>
+
+    <input type="file" id="kitchenPhoto" accept="image/*">
+
+    <button class="complete" onclick="completeTask('kitchen')">
+      ✅ Mark Kitchen Complete
+    </button>
+  </div>
+
+
+  <div class="card">
+    <div class="history-title">📋 Cleaning History</div>
+
+    <div class="history-row">
+      <strong>21 September 2026</strong>
+      <div class="small">
+        🚿 Bathroom — Shehab
+      </div>
+      <div class="small">
+        🧹 Kitchen — Rafi
+      </div>
+    </div>
+
+    <div class="history-row">
+      <strong>24 September 2026</strong>
+      <div class="small">
+        🚿 Bathroom — Fahim
+      </div>
+      <div class="small">
+        🧹 Kitchen — Arafat
+      </div>
+    </div>
+
+    <div class="history-row">
+      <strong>27 September 2026</strong>
+      <div class="small">
+        🚿 Bathroom — Sarwar
+      </div>
+      <div class="small">
+        🧹 Kitchen — Shehab
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const members = [
+  "Shehab",
+  "Rafi",
+  "Fahim",
+  "Arafat",
+  "Sarwar"
+];
+
+const startDate = new Date("2026-09-21");
+
+function getCleaningDay() {
+
+  const today = new Date();
+
+  today.setHours(0,0,0,0);
+
+  const start = new Date(startDate);
+  start.setHours(0,0,0,0);
+
+  const difference =
+    Math.floor((today - start) / (1000 * 60 * 60 * 24));
+
+  if (difference < 0) {
+    return 0;
+  }
+
+  return Math.floor(difference / 3);
+}
+
+
+function updateAssignments() {
+
+  const day = getCleaningDay();
+
+  const bathroomIndex = (day * 2) % members.length;
+  const kitchenIndex = (day * 2 + 1) % members.length;
+
+  document.getElementById("bathroomPerson").textContent =
+    members[bathroomIndex];
+
+  document.getElementById("kitchenPerson").textContent =
+    members[kitchenIndex];
+}
+
+
+function completeTask(task) {
+
+  const photoInput =
+    document.getElementById(task + "Photo");
+
+  if (!photoInput.files.length) {
+
+    alert(
+      "Please upload the cleaning photo first."
+    );
+
+    return;
+  }
+
+  const status =
+    document.getElementById(task + "Status");
+
+  status.textContent = "✅ Completed";
+  status.style.background = "#d9f7e5";
+  status.style.color = "#16803c";
+
+  alert(
+    task.charAt(0).toUpperCase() +
+    task.slice(1) +
+    " cleaning completed!"
+  );
+}
+
+
+document.getElementById("today").textContent =
+  new Date().toLocaleDateString(
+    "en-AU",
+    {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }
+  );
+
+updateAssignments();
+
+</script>
+
+</body>
+</html>
